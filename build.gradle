@@ -24,10 +24,3 @@ dependencies {
 
     testImplementation 'org.easytesting:fest-assert-core:2.0M10'
 }
-
-jacocoTestReport {
-    reports {
-        xml.enabled = true
-    }
-}
-

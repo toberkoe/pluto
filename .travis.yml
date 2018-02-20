@@ -3,23 +3,24 @@ sudo: false
 before_install:
  - chmod +x gradlew
 install: true
+
 addons:
   sonarcloud:
     organization: "toberkoe-github"
     token:
       secure: $SONAR_TOKEN
+
 jdk:
   - oraclejdk9
+
 script:
-  - ./gradlew build test jacocoTestReport
   - ./gradlew sonarqube
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+
 cache:
   directories:
     - '$HOME/.m2/repository'
     - '$HOME/.sonar/cache'
     - '$HOME/.gradle'
     - '.gradle'
-#FIXME automatically increment version?
-#FIXME automatically push to maven central repo?
+
+#FIXME WHY is jacocoTestReport always skipped??? --> no code coverage in sonarqube...
