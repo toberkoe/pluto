@@ -18,3 +18,5 @@ cache:
     - '$HOME/.sonar/cache'
     - '$HOME/.gradle'
     - '.gradle'
+after_success:
+  - ./gradlew test jacocoTestReport coveralls
