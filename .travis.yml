@@ -11,9 +11,7 @@ addons:
 jdk:
   - oraclejdk9
 script:
-  - ./gradlew test
-  - ./gradlew jacocoTestReport
-  - ./gradlew sonarqube
+  - ./gradlew test jacocoTestReport sonarqube
 cache:
   directories:
     - '$HOME/.m2/repository'
