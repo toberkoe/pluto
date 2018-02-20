@@ -6,7 +6,6 @@ plugins {
 
 apply plugin: 'java'
 
-archivesBaseName 'pluto'
 group 'de.toberkoe.tools'
 version '0.1-SNAPSHOT'
 
