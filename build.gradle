@@ -1,9 +1,19 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.1.0'
+    }
+}
+
 plugins {
     id 'org.sonarqube' version '2.6.1'
 }
 
 apply plugin: 'java'
 apply plugin: 'jacoco'
+apply plugin: 'org.junit.platform.gradle.plugin'
 
 group 'de.toberkoe.tools'
 version '0.1-SNAPSHOT'
@@ -16,11 +26,23 @@ repositories {
 }
 
 dependencies {
-    implementation 'javax:javaee-api:8.0'
+    compile 'javax.persistence:javax.persistence-api:2.2'
+    compile 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    compile 'org.junit.jupiter:junit-jupiter-params:5.1.0'
+    compile 'org.mockito:mockito-core:2.15.0'
+    testCompile 'org.easytesting:fest-assert-core:2.0M10'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
+    testRuntime 'org.junit.platform:junit-platform-launcher:1.1.0'
+    testRuntime 'org.junit.platform:junit-platform-runner:1.1.0'
+}
 
-    implementation 'org.mockito:mockito-core:2.15.0'
-    implementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
-    implementation 'org.junit.jupiter:junit-jupiter-params:5.1.0'
+jacoco {
+    toolVersion '0.7.9'
+    applyTo junitPlatformTest
+}
 
-    testImplementation 'org.easytesting:fest-assert-core:2.0M10'
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+    }
 }
