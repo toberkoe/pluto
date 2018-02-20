@@ -14,9 +14,7 @@ jdk:
   - oraclejdk9
 
 script:
-  - ./gradlew clean test
-  - ./gradlew jacocoJUnit5TestReport
-  - ./gradlew sonarqube
+  - ./gradlew clean test jacocoJUnit5TestReport sonarqube
 
 cache:
   directories:
