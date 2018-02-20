@@ -20,3 +20,5 @@ cache:
     - '.gradle'
 after_success:
   - ./gradlew test jacocoTestReport coveralls
+#FIXME automatically increment version?
+#FIXME automatically push to maven central repo?
