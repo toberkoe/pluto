@@ -25,15 +25,9 @@ dependencies {
     testImplementation 'org.easytesting:fest-assert-core:2.0M10'
 }
 
-test {
-    finalizedBy jacocoTestReport
-}
-
 jacocoTestReport {
     reports {
         xml.enabled = true
     }
 }
-
-check.dependsOn jacocoTestReport
 
