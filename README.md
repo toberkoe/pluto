@@ -7,6 +7,25 @@
 
 ## MockExtension
 
+``` java
+@ExtendWith(MockExtension.class)
+class MockExtensionTest {
+
+    @Mock
+    private EntityManager manager;
+
+    @InjectMocks
+    private PersonRepository repository;
+
+    @Test
+    void testCreatePerson() {
+        doReturn(new Person()).when(manager).merge(any(Person.class));
+        assertThat(repository.create(new Person())).isNotNull();
+    }
+}
+```
+
+
 [//]: # (PersistenceExtension)
 
 [//]: # (Latest News)
