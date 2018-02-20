@@ -11,6 +11,8 @@ addons:
 jdk:
   - oraclejdk9
 script:
+  - ./gradlew test
+  - ./gradlew jacocoTestReport
   - ./gradlew sonarqube
 cache:
   directories:
@@ -18,7 +20,5 @@ cache:
     - '$HOME/.sonar/cache'
     - '$HOME/.gradle'
     - '.gradle'
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
 #FIXME automatically increment version?
 #FIXME automatically push to maven central repo?

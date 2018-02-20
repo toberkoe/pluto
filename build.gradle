@@ -15,15 +15,6 @@ repositories {
     mavenCentral()
 }
 
-jacocoTestReport {
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-}
-
-check.dependsOn jacocoTestReport
-
 dependencies {
     implementation 'javax:javaee-api:8.0'
 
@@ -33,4 +24,12 @@ dependencies {
 
     testImplementation 'org.easytesting:fest-assert-core:2.0M10'
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+    }
+}
+
+check.dependsOn jacocoTestReport
 
