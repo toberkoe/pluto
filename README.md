@@ -7,6 +7,25 @@
 
 ## Examples
 
+### Fluent Assertions
+
+[//]: # (reference to Fest Fluent Assertions, lack of jdk8+ support)
+
+#### OptionalAssert<T>
+
+``` java
+class MoreAssertionsTest {
+
+    @Test
+    void testOptionalAssert() {
+        MoreAssertions.assertThat(Optional.empty()).isEmpty();
+    }
+
+}
+```
+
+[//]: # (table of available methods)
+
 ### MockExtension
 
 ``` java
