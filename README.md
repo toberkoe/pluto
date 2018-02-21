@@ -7,9 +7,10 @@
 
 ## Examples
 
-### Fluent Assertions
+### Assertions
 
-[//]: # (reference to Fest Fluent Assertions, lack of jdk8+ support)
+[//]: # (reference to Fest Fluent Assertions, lack of jdk8+ support, introduction of MoreAssertions)
+[//]: # (overview over all methods possible by MoreAssertions)
 
 #### OptionalAssert<T>
 

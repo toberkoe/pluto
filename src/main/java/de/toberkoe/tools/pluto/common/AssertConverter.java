@@ -18,7 +18,7 @@ class AssertConverter<T> {
                 .isNotNull()
                 .isNotEmpty();
 
-        return new AssertConverter<>(optional.get());
+        return optional.map(AssertConverter::new).orElseGet(() -> new AssertConverter<>(null));
     }
 
     public StringAssert asStringAssert() {

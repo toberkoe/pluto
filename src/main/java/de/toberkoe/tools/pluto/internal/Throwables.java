@@ -7,7 +7,10 @@ import java.util.Optional;
  *
  * @author t.bertram-koehler
  */
-public class Throwables {
+public final class Throwables {
+
+    private Throwables() {
+    }
 
     /**
      * Extracts the requested throwable from given {@link Throwable}.
