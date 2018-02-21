@@ -5,7 +5,9 @@
 
 *JUnit5 Extensions for easier unit and integration tests*
 
-## MockExtension
+## Examples
+
+### MockExtension
 
 ``` java
 @ExtendWith(MockExtension.class)
