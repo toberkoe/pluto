@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static de.toberkoe.fluentassertions.api.Assertions.assertThat;
 
 @ExtendWith(PersistenceExtension.class)
-class PersonLocalBeanIT {
+class PersonLocalBeanTest {
 
     @InjectPersistence
     private PersonLocalBean repository;

@@ -12,7 +12,7 @@ import static de.toberkoe.fluentassertions.api.Assertions.assertThat;
 
 @ExtendWith(PersistenceExtension.class)
 @Log(Log.Level.DEBUG)
-class DynamicPersonCdiServiceIT {
+class DynamicPersonCdiServiceTest {
 
     @Inject
     PersonCdiService service;

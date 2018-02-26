@@ -19,7 +19,7 @@ import static de.toberkoe.fluentassertions.api.Assertions.assertThat;
 
 @ExtendWith(PersistenceExtension.class)
 @EntityDiscoveryMode(value = Strategy.STATIC)
-class StaticPersonCdiServiceIT {
+class StaticPersonCdiServiceTest {
 
     @Inject
     PersonCdiService service;
