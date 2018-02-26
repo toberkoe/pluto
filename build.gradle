@@ -94,6 +94,12 @@ afterEvaluate {
     }
 }
 
+javadoc {
+    doFirst {
+        options.addStringOption('-module-path', classpath.asPath)
+    }
+}
+
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
     from javadoc
