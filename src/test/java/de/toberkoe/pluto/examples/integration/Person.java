@@ -1,12 +1,10 @@
-package de.toberkoe.pluto.examples;
+package de.toberkoe.pluto.examples.integration;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table
+@Table(name = "PERSON")
 public class Person {
 
     @Id
@@ -17,8 +15,14 @@ public class Person {
 
     private String lastName;
 
-    public Person() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "fk_job")
+    private Job job;
+
+    @OneToMany
+    private List<Hobby> hobbies;
+
+    public Person() {}
 
     public Person(String firstName, String lastName) {
         this.firstName = firstName;
@@ -47,5 +51,21 @@ public class Person {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public List<Hobby> getHobbies() {
+        return hobbies;
+    }
+
+    public void setHobbies(List<Hobby> hobbies) {
+        this.hobbies = hobbies;
+    }
+
+    public Job getJob() {
+        return job;
+    }
+
+    public void setJob(Job job) {
+        this.job = job;
     }
 }

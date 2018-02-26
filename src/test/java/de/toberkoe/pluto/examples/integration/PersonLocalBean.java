@@ -1,11 +1,13 @@
-package de.toberkoe.pluto.examples;
+package de.toberkoe.pluto.examples.integration;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-public class PersonRepository {
+@Stateless
+public class PersonLocalBean {
 
-    @PersistenceContext(unitName = "pluto")
+    @PersistenceContext
     private EntityManager manager;
 
     public Person create(Person person) {

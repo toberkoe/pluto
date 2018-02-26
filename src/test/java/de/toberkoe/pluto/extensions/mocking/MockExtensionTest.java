@@ -1,7 +1,7 @@
 package de.toberkoe.pluto.extensions.mocking;
 
-import de.toberkoe.pluto.examples.Person;
-import de.toberkoe.pluto.examples.PersonRepository;
+import de.toberkoe.pluto.examples.mock.Person;
+import de.toberkoe.pluto.examples.mock.PersonRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

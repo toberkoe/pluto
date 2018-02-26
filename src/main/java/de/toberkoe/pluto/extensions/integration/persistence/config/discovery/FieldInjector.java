@@ -1,8 +1,11 @@
 package de.toberkoe.pluto.extensions.integration.persistence.config.discovery;
 
+import de.toberkoe.pluto.extensions.integration.persistence.config.InjectPersistence;
 import de.toberkoe.pluto.extensions.integration.persistence.config.PersistenceManager;
 import org.apache.log4j.Logger;
 
+import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.lang.annotation.Annotation;
@@ -19,7 +22,7 @@ import static java.util.stream.Collectors.toList;
 public class FieldInjector {
 
     private static final Logger logger = Logger.getLogger("de.pluto.config");
-    private static final List<String> injectableAnnotations = List.of("Inject", "InjectPersistence", "EJB");
+    private static final List<Class<? extends Annotation>> injectableAnnotations = List.of(Inject.class, InjectPersistence.class, EJB.class);
 
     private Object target;
     private List<Field> fields;
@@ -68,25 +71,11 @@ public class FieldInjector {
         }
     }
 
-    private void injectFieldsAnnotatedWith(String annotationName) {
+    private void injectFieldsAnnotatedWith(Class<? extends Annotation> annotationClass) {
         fields.stream()
-                .filter(f -> isAnnotatedWith(f, annotationName))
+                .filter(f -> f.isAnnotationPresent(annotationClass))
                 .filter(f -> getValue(f) == null)
                 .forEach(this::injectField);
-    }
-
-    private boolean isAnnotatedWith(Field field, String annotationName) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Check field " + field.getName() + " for presence of annotation " + annotationName);
-            logger.debug("Annotations on field: " + Arrays.toString(field.getAnnotations()));
-        }
-        return Stream.of(field.getAnnotations())
-                .peek(logger::debug)
-                .map(Annotation::getClass)
-                .peek(logger::debug)
-                .map(Class::getSimpleName)
-                .peek(logger::debug)
-                .anyMatch(n -> n.equals(annotationName));
     }
 
     private void injectField(Field field) {

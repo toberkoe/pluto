@@ -4,6 +4,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.junit.platform:junit-platform-gradle-plugin:1.1.0'
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
     }
 }
 
@@ -14,9 +15,12 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'org.junit.platform.gradle.plugin'
+apply plugin: 'maven'
+apply plugin: 'io.codearte.nexus-staging'
+apply plugin: 'signing'
 
 group 'de.toberkoe'
-version '0.1-SNAPSHOT'
+version '0.1'
 
 sourceCompatibility = 9.0
 targetCompatibility = 9.0
@@ -27,7 +31,6 @@ repositories {
 
 configurations.all {
     exclude group: 'javax.transaction', module: 'javax.transaction-api'
-//    exclude group: 'net.bytebuddy', module: 'byte-buddy'
 }
 
 dependencies {
@@ -39,14 +42,9 @@ dependencies {
     implementation 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final'
     implementation 'org.hibernate:hibernate-core:5.2.13.Final'
     implementation 'org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:2.0.0.Alpha1'
-//    implementation 'javax.transaction:javax.transaction-api:1.2'
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
-//    implementation 'com.sun.xml.bind:jaxb-core:2.3.0'
-//    implementation 'com.sun.xml.bind:jaxb-impl:2.3.0'
-//    implementation 'org.slf4j:slf4j-api:1.7.25'
-//    implementation 'org.slf4j:slf4j-log4j12:1.7.25'
-//    implementation 'javax.ejb:javax.ejb-api:3.2'
-//    implementation 'javax.inject:javax.inject:1'
+    implementation 'javax.ejb:javax.ejb-api:3.2'
+    implementation 'javax.inject:javax.inject:1'
 
     testImplementation 'de.toberkoe:fluent-assertions:0.2'
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
@@ -85,4 +83,78 @@ afterEvaluate {
     }
 
     check.dependsOn jacocoJUnit5TestReport
+
+    compileJava {
+        doFirst {
+            options.compilerArgs = [
+                    '--module-path', classpath.asPath,
+            ]
+            classpath = files()
+        }
+    }
 }
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+allprojects {
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUser, password: ossrhPassword)
+                }
+                pom.project {
+                    name project.name
+                    description project.description
+                    packaging 'jar'
+                    url 'https://github.com/toberkoe/pluto'
+
+                    scm {
+                        connection 'scm:git:https://github.com/toberkoe/pluto.git'
+                        developerConnection 'scm:git:github.com/toberkoe/pluto.git'
+                        url 'https://github.com/toberkoe/pluto.git'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = 'tbk'
+                            name = 'Tobias Bertram-Köhler'
+                            email = 't.bertramkoehler@mail.com'
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    nexusStaging {
+        username = ossrhUser
+        password = ossrhPassword
+    }
+}
+

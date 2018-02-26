@@ -32,6 +32,10 @@ public class PersistenceManager {
         String unit = persistenceUnit.orElse("");
         if (factories.containsKey(unit)) {
             return factories.get(unit).createEntityManager();
+        } else if (factories.size() == 1) {
+            //FIXME make this a setting
+            logger.warn("Unable to find an entity manager for given persistence unit " + unit + ". However there is only one entity manager declared. Try using this");
+            return factories.get(factories.keySet().stream().findAny().orElse(unit)).createEntityManager();
         }
         throw new IllegalStateException("Unable to get instance of EntityManagerFactory for unit name " + unit);
     }

@@ -15,7 +15,7 @@ jdk:
   - oraclejdk9
 
 script:
-  - ./gradlew clean test jacocoJUnit5TestReport sonarqube
+  - ./gradlew clean test jacocoJUnit5TestReport sonarqube -PossrhUser="${ossrhUser}" -PossrhPassword="${ossrhPassword}"
 
 cache:
   directories:
