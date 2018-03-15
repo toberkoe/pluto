@@ -4,6 +4,7 @@ import de.toberkoe.pluto.extensions.integration.persistence.config.InjectPersist
 import de.toberkoe.pluto.extensions.integration.persistence.config.PersistenceManager;
 import org.apache.log4j.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -11,10 +12,8 @@ import javax.persistence.PersistenceContext;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -81,10 +80,50 @@ public class FieldInjector {
     private void injectField(Field field) {
         field.setAccessible(true);
         Object value = createValueInstance(field.getType());
+        invokePostConstructs(value);
         setValue(field, value);
         //FIXME optimize -> check IntegrationTestConfig if subsequent init is demanded
         //FIXME optimize -> check IntegrationTestConfig for specific demanded subsequent init fields
         FieldInjector.of(value).inject();
+    }
+
+    private void invokePostConstructs(Object value) {
+        Map<Integer, Method> methods = collectPostConstructs(value.getClass());
+
+        List<Integer> layers = new ArrayList<>(methods.keySet());
+        Collections.reverse(layers);
+
+        layers.stream()
+                .map(methods::get)
+                .forEach(m -> invokePostConstruct(value, m));
+    }
+
+    private void invokePostConstruct(Object value, Method method) {
+        try {
+            method.setAccessible(true);
+            method.invoke(value);
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to call PostConstruct method " + value.getClass().getName() + "." + method.getName(), e);
+        }
+    }
+
+    private Map<Integer, Method> collectPostConstructs(Class<?> targetClass) {
+        return collectPostConstructs(targetClass, 0);
+    }
+
+    private Map<Integer, Method> collectPostConstructs(Class<?> targetClass, int layer) {
+        Map<Integer, Method> methods = new TreeMap<>();
+        if (targetClass.getSuperclass() != null) {
+            methods.putAll(collectPostConstructs(targetClass.getSuperclass(), layer + 1));
+        }
+
+        Stream<Method> declaredMethods = Stream.of(targetClass.getDeclaredMethods());
+        Stream<Method> publicMethods = Stream.of(targetClass.getMethods());
+
+        Stream.concat(declaredMethods, publicMethods)
+                .filter(m -> m.isAnnotationPresent(PostConstruct.class))
+                .forEach(m -> methods.put(layer, m));
+        return methods;
     }
 
     private <E> E createValueInstance(Class<E> valueClass) {
@@ -95,7 +134,7 @@ public class FieldInjector {
             constructor.setAccessible(true);
             return constructor.newInstance();
         } catch (Exception e) {
-            throw new IllegalStateException("Unable to create instance of " + valueClass + ". No matching constructor found");
+            throw new IllegalStateException("Unable to create instance of " + valueClass + ". No matching constructor found", e);
         }
     }
 
