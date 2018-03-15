@@ -20,7 +20,7 @@ apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'signing'
 
 group 'de.toberkoe'
-version '0.1'
+version '0.2'
 
 sourceCompatibility = 9.0
 targetCompatibility = 9.0
