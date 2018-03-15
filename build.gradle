@@ -46,7 +46,7 @@ dependencies {
     implementation 'javax.ejb:javax.ejb-api:3.2'
     implementation 'javax.inject:javax.inject:1'
 
-    testImplementation 'de.toberkoe:fluent-assertions:0.2'
+    testImplementation 'de.toberkoe:fluent-assertions:0.3'
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
     testRuntime 'org.junit.platform:junit-platform-launcher:1.1.0'
     testRuntime 'org.junit.platform:junit-platform-runner:1.1.0'
