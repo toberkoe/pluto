@@ -11,7 +11,7 @@
 The most recent release is [pluto 0.2][current release], released 2018-03-15.
 
 The Maven group ID is `de.toberkoe`, and the artifact ID is `pluto`. Use
-version `0.3` for the current version.
+version `0.2` for the current version.
 
 To add a dependency on fluent-assertions using Maven, use the following:
 
@@ -26,7 +26,7 @@ To add a dependency on fluent-assertions using Maven, use the following:
 
 To add a dependency using Gradle:
 
-```
+```groovy
 dependencies {
   testImplementation 'de.toberkoe:pluto:0.2'
 }
@@ -39,7 +39,7 @@ dependencies {
 This extension helps you with injecting mocks. 
 Before each test, the extension calls MockitoAnnotations.initMocks.
 
-``` java
+```java
 @ExtendWith(MockExtension.class)
 class MockExtensionTest {
 
