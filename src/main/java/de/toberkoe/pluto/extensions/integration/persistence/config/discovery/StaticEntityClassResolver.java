@@ -12,10 +12,12 @@ public class StaticEntityClassResolver implements EntityClassResolver {
 
     private final Map<String, Set<Class<?>>> entityClasses;
     private final boolean throwExceptionOnMissingProvider;
+    private final String defaultPersistenceUnitName;
 
-    public StaticEntityClassResolver(boolean throwExceptionOnMissingProvider) {
+    public StaticEntityClassResolver(boolean throwExceptionOnMissingProvider, String persistenceUnitName) {
         this.entityClasses = new HashMap<>();
         this.throwExceptionOnMissingProvider = throwExceptionOnMissingProvider;
+        this.defaultPersistenceUnitName = persistenceUnitName;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class StaticEntityClassResolver implements EntityClassResolver {
 
     private Pair<String, Set<Class<?>>> getEntityClassesFromMethod(Method method) {
         EntityClassProvider annotation = method.getAnnotation(EntityClassProvider.class);
-        String persistenceUnit = annotation.forPersistenceUnit();
+        String persistenceUnit = annotation.forPersistenceUnit().isEmpty() ? defaultPersistenceUnitName : annotation.forPersistenceUnit();
 
         try {
             method.setAccessible(true);
