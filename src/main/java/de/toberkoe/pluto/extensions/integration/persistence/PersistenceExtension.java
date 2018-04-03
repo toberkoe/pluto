@@ -9,27 +9,21 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 public class PersistenceExtension extends MockExtension implements BeforeAllCallback, AfterAllCallback {
 
-    private final PersistenceManager manager;
-
-    public PersistenceExtension() {
-        this.manager = new PersistenceManager();
-    }
-
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         PersistenceConfig config = PersistenceConfig.build(context.getRequiredTestClass());
-        manager.init(config);
+        PersistenceManager.INSTANCE.init(config);
     }
 
     @Override
     public void beforeEach(ExtensionContext context) {
         super.beforeEach(context);
         //FIXME speed up by explicit naming of injectable services
-        manager.injectAll(context.getTestInstance());
+        PersistenceManager.INSTANCE.injectAll(context.getTestInstance());
     }
 
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
-        manager.close();
+        PersistenceManager.INSTANCE.close();
     }
 }

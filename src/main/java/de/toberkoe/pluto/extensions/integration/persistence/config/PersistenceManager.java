@@ -15,29 +15,39 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PersistenceManager {
 
+    private static final Map<String, EntityManagerFactory> factories = new ConcurrentHashMap<>();
+
     private static final Logger logger = Logger.getLogger("de.pluto.config");
-    private static final Map<String, EntityManagerFactory> factories = new HashMap<>();
+    private static final Map<String, EntityManager> managers = new ConcurrentHashMap<>();
+    public static PersistenceManager INSTANCE = new PersistenceManager();
     private PersistenceConfig config;
 
-    public static void injectAll(Optional<Object> object) {
+    public void injectAll(Optional<Object> object) {
         object.stream()
                 .map(FieldInjector::of)
                 .forEach(FieldInjector::inject);
     }
 
-    public static EntityManager getInstanceOfEntityManager(Optional<String> persistenceUnit) {
+    public EntityManager getInstanceOfEntityManager(Optional<String> persistenceUnit) {
         String unit = persistenceUnit.orElse("");
-        if (factories.containsKey(unit)) {
-            return factories.get(unit).createEntityManager();
-        } else if (factories.size() == 1) {
-            //FIXME make this a setting
-            logger.warn("Unable to find an entity manager for given persistence unit " + unit + ". However there is only one entity manager declared. Try using this");
-            return factories.get(factories.keySet().stream().findAny().orElse(unit)).createEntityManager();
+        if (unit.trim().isEmpty()) {
+            unit = config.getDefaultUnitName();
         }
-        throw new IllegalStateException("Unable to get instance of EntityManagerFactory for unit name " + unit);
+
+        return managers.computeIfAbsent(unit, u -> getEntityManagerFactory(u).createEntityManager());
+    }
+
+    private EntityManagerFactory getEntityManagerFactory(String unit) {
+        if (!factories.containsKey(unit)) {
+            factories.put(unit, initFactory(unit, Database.getDefault()));
+        }
+        return factories.get(unit);
+        //FIXME configurable behaviour on missing factory for given unit
+        //default behaviour: create if missing
     }
 
     public void init(PersistenceConfig config) {
@@ -45,9 +55,14 @@ public class PersistenceManager {
         config.getDatabases().forEach(this::initFactory);
     }
 
-    private void initFactory(String persistenceUnit, Database database) {
+    private synchronized EntityManagerFactory initFactory(String persistenceUnit, Database database) {
         EntityManagerFactory factory = tryToCreateFactory(persistenceUnit, database, new HashMap<>());
         factories.put(persistenceUnit, factory);
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Successfully initialized EntityManagerFactory for unit " + persistenceUnit);
+        }
+        return factories.get(persistenceUnit);
     }
 
     private EntityManagerFactory tryToCreateFactory(String persistenceUnit, Database database, HashMap<Object, Object> map) {
@@ -113,6 +128,10 @@ public class PersistenceManager {
     }
 
     public void close() {
+        if (logger.isDebugEnabled()) {
+            factories.keySet().forEach(unit -> logger.debug("Closing entity manager factory " + unit));
+        }
+
         factories.values().forEach(EntityManagerFactory::close);
         factories.clear();
     }
