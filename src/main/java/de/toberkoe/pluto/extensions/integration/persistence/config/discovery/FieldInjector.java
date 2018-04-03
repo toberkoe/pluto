@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Inject;
+import javax.inject.Qualifier;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.lang.annotation.Annotation;
@@ -16,6 +17,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 public class FieldInjector {
@@ -26,7 +28,7 @@ public class FieldInjector {
     private Object target;
     private List<Field> fields;
 
-    FieldInjector() {
+    private FieldInjector() {
     }
 
     public static FieldInjector of(Object target) {
@@ -59,20 +61,33 @@ public class FieldInjector {
 
     private void injectEntityManager() {
         List<Field> managerFields = fields.stream()
-                .filter(f -> f.getType() == EntityManager.class)
+                .filter(f -> f.getType().equals(EntityManager.class))
                 .filter(f -> getValue(f) == null)
                 .collect(toList());
 
         for (Field field : managerFields) {
-            PersistenceContext context = field.getAnnotation(PersistenceContext.class);
-            Optional<String> unitName = Optional.ofNullable(context).map(PersistenceContext::unitName);
-            setValue(field, PersistenceManager.getInstanceOfEntityManager(unitName));
+            Optional<String> unitName = getUnitNameFromAnnotations(field);
+            setValue(field, requireNonNull(PersistenceManager.INSTANCE.getInstanceOfEntityManager(unitName)));
         }
+    }
+
+    private Optional<String> getUnitNameFromAnnotations(Field field) {
+        PersistenceContext context = field.getAnnotation(PersistenceContext.class);
+        if (context != null) {
+            return Optional.of(context.unitName());
+        }
+
+        return Stream.of(field.getDeclaredAnnotations())
+                .map(Annotation::annotationType)
+                .filter(a -> a.isAnnotationPresent(Qualifier.class))
+                .map(Class::getName)
+                .findAny();
     }
 
     private void injectFieldsAnnotatedWith(Class<? extends Annotation> annotationClass) {
         fields.stream()
                 .filter(f -> f.isAnnotationPresent(annotationClass))
+                .filter(f -> !f.getType().equals(EntityManager.class))
                 .filter(f -> getValue(f) == null)
                 .forEach(this::injectField);
     }
@@ -139,6 +154,10 @@ public class FieldInjector {
     }
 
     private void setValue(Field field, Object value) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Set Value " + value + " to field " + field.getDeclaringClass().getSimpleName() + "." + field.getName());
+        }
+
         try {
             field.setAccessible(true);
             field.set(target, value);
