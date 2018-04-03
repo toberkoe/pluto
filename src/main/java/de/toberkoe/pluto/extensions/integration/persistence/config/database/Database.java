@@ -14,4 +14,8 @@ public enum Database {
                 throw new UnsupportedOperationException("[" + this + "] DataSourceProvider not yet implemented");
         }
     }
+
+    public static Database getDefault() {
+        return HSQLDB;
+    }
 }
