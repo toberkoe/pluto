@@ -8,10 +8,10 @@
 
 ## Latest release
 
-The most recent release is [pluto 0.2][current release], released 2018-03-15.
+The most recent release is [pluto 0.3][current release], released 2018-04-03.
 
 The Maven group ID is `de.toberkoe`, and the artifact ID is `pluto`. Use
-version `0.2` for the current version.
+version `0.3` for the current version.
 
 To add a dependency on fluent-assertions using Maven, use the following:
 
@@ -19,7 +19,7 @@ To add a dependency on fluent-assertions using Maven, use the following:
 <dependency>
   <groupId>de.toberkoe</groupId>
   <artifactId>pluto</artifactId>
-  <version>0.2</version>
+  <version>0.3</version>
   <scope>test</scope>
 </dependency>
 ```
@@ -28,7 +28,7 @@ To add a dependency using Gradle:
 
 ```groovy
 dependencies {
-  testImplementation 'de.toberkoe:pluto:0.2'
+  testImplementation 'de.toberkoe:pluto:0.3'
 }
 ```
 
@@ -144,4 +144,4 @@ For further information you can check the wiki or the source. This lib is still 
 
 [//]: # (Wiki)
 
-[current release]: https://github.com/toberkoe/pluto/releases/tag/0.2
+[current release]: https://github.com/toberkoe/pluto/releases/tag/0.3
