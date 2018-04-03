@@ -7,6 +7,7 @@ import de.toberkoe.pluto.examples.integration.PersonCdiService;
 import de.toberkoe.pluto.extensions.integration.persistence.config.discovery.EntityClassProvider;
 import de.toberkoe.pluto.extensions.integration.persistence.config.discovery.EntityDiscoveryMode;
 import de.toberkoe.pluto.extensions.integration.persistence.config.discovery.Strategy;
+import de.toberkoe.pluto.extensions.integration.persistence.config.log.Log;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -19,6 +20,7 @@ import static de.toberkoe.fluentassertions.api.Assertions.assertThat;
 
 @ExtendWith(PersistenceExtension.class)
 @EntityDiscoveryMode(value = Strategy.STATIC)
+@Log(Log.Level.DEBUG)
 class StaticPersonCdiServiceTest {
 
     @Inject
