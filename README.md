@@ -1,6 +1,6 @@
 # Pluto 
 [![Build Status](https://secure.travis-ci.org/toberkoe/pluto.png)](http://travis-ci.org/toberkoe/pluto) 
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=de.toberkoe%3Apluto&metric=coverage)](https://sonarcloud.io/dashboard?id=de.toberkoe%3Apluto) 
+[![codecov](https://codecov.io/gh/toberkoe/pluto/branch/master/graph/badge.svg)](https://codecov.io/gh/toberkoe/pluto)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=de.toberkoe%3Apluto&metric=alert_status)](https://sonarcloud.io/dashboard?id=de.toberkoe%3Apluto)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.toberkoe/pluto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.toberkoe/pluto)
 

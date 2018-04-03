@@ -13,7 +13,6 @@ plugins {
 }
 
 apply plugin: 'java'
-apply plugin: 'jacoco'
 apply plugin: 'org.junit.platform.gradle.plugin'
 apply plugin: 'maven'
 apply plugin: 'io.codearte.nexus-staging'
@@ -22,8 +21,8 @@ apply plugin: 'signing'
 group 'de.toberkoe'
 version '0.3'
 
-sourceCompatibility = 9.0
-targetCompatibility = 9.0
+sourceCompatibility = 10.0
+targetCompatibility = 10.0
 
 repositories {
     mavenCentral()
@@ -53,37 +52,10 @@ dependencies {
     testRuntime 'org.junit.platform:junit-platform-runner:1.1.0'
 }
 
-jacocoTestReport {
-    reports {
-        xml.enabled = true
-    }
-}
-
 junitPlatform.enableStandardTestTask = true
 
 afterEvaluate {
     def junitPlatformTestTask = (JavaExec) project.tasks.getByName('junitPlatformTest')
-
-    jacoco {
-        toolVersion '0.8.0'
-        applyTo(junitPlatformTestTask)
-    }
-
-    project.task(type: JacocoReport, "jacocoJUnit5TestReport") {
-        executionData(junitPlatformTestTask)
-        sourceSets(sourceSets.main)
-        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
-        classDirectories = files(sourceSets.main.output)
-
-        reports {
-            xml.enabled = true
-            xml.destination file("${buildDir}/jacoco/report.xml")
-            html.enabled = true
-            html.destination file("${buildDir}/jacoco/html")
-        }
-    }
-
-    check.dependsOn jacocoJUnit5TestReport
 
     compileJava {
         doFirst {
