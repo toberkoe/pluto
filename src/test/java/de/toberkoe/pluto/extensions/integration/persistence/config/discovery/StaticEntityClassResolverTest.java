@@ -8,7 +8,7 @@ class StaticEntityClassResolverTest {
 
     @Test
     void resolve() {
-        StaticEntityClassResolver resolver = new StaticEntityClassResolver(true);
+        StaticEntityClassResolver resolver = new StaticEntityClassResolver(true, "");
         assertThrows(EntityDiscoveryException.class, () -> resolver.resolve(String.class));
     }
 }
