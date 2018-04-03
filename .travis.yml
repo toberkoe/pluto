@@ -12,7 +12,7 @@ addons:
       secure: $SONAR_TOKEN
 
 jdk:
-  - oraclejdk9
+  - oraclejdk10
 
 script:
   - ./gradlew clean test sonarqube -PossrhUser="${ossrhUser}" -PossrhPassword="${ossrhPassword}"
