@@ -3,36 +3,14 @@ package de.toberkoe.pluto.extensions.integration.persistence.config.log;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import java.util.Optional;
+
 public class LogConfig {
 
     public static void configure(Log annotation) {
-        Level logLevel = Level.ERROR;
-        if (annotation != null) {
-            switch (annotation.value()) {
-                case OFF:
-                    logLevel = Level.OFF;
-                    break;
-                case FATAL:
-                    logLevel = Level.FATAL;
-                    break;
-                case ERROR:
-                    logLevel = Level.ERROR;
-                    break;
-                case WARN:
-                    logLevel = Level.WARN;
-                    break;
-                case INFO:
-                    logLevel = Level.INFO;
-                    break;
-                case DEBUG:
-                    logLevel = Level.DEBUG;
-                    break;
-                case TRACE:
-                    logLevel = Level.TRACE;
-                    break;
-            }
-        }
-        configure(logLevel);
+        Log.Level logLevel = Optional.ofNullable(annotation).map(Log::value).orElse(Log.Level.ERROR);
+        Level level = Level.toLevel(logLevel.name());
+        configure(level);
     }
 
     private static void configure(Level logLevel) {
