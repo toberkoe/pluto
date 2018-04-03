@@ -7,22 +7,20 @@ import de.toberkoe.pluto.extensions.integration.persistence.config.discovery.*;
 import de.toberkoe.pluto.extensions.integration.persistence.config.log.Log;
 import de.toberkoe.pluto.extensions.integration.persistence.config.log.LogConfig;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PersistenceConfig {
 
-
     private final Class<?> testClass;
     private final Map<String, Database> databases = new HashMap<>();
+    private final String defaultUnitName;
     private EntityClassResolver entityResolver;
 
     private PersistenceConfig(Class<?> testClass) {
         this.testClass = testClass;
+        defaultUnitName = UUID.randomUUID().toString();
     }
 
     public static PersistenceConfig build(Class<?> testClass) {
@@ -52,7 +50,7 @@ public class PersistenceConfig {
 
     private void resolveDatabase(UseDatabase db) {
         if (db == null) {
-            databases.put("", Database.HSQLDB);
+            databases.put(defaultUnitName, Database.HSQLDB);
         } else {
             databases.put(db.forPersistenceUnit(), db.value());
         }
@@ -68,19 +66,20 @@ public class PersistenceConfig {
         switch (discoveryMode) {
             case DYNAMIC:
                 entityResolver = new DynamicEntityClassResolver(getDefaultPersistenceUnitName());
-                EntityClassResolver resolver = new StaticEntityClassResolver(false);
+                EntityClassResolver resolver = new StaticEntityClassResolver(false, getDefaultPersistenceUnitName());
                 resolver.resolve(testClass);
                 ((DynamicEntityClassResolver) entityResolver).putEntityClasses(resolver.getEntityClasses());
                 break;
             case STATIC:
-                entityResolver = new StaticEntityClassResolver(true);
+            default:
+                entityResolver = new StaticEntityClassResolver(true, getDefaultPersistenceUnitName());
                 break;
         }
         entityResolver.resolve(testClass);
     }
 
     private String getDefaultPersistenceUnitName() {
-        return databases.keySet().stream().findFirst().orElse("");
+        return databases.keySet().stream().findFirst().orElse(defaultUnitName);
     }
 
     public void putEntityClass(String persistenceUnit, Class<?> entityClass) {
@@ -113,5 +112,9 @@ public class PersistenceConfig {
 
     private boolean isDynamicDiscoveryMode() {
         return entityResolver instanceof DynamicEntityClassResolver;
+    }
+
+    public String getDefaultUnitName() {
+        return defaultUnitName;
     }
 }
