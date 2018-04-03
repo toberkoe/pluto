@@ -65,7 +65,7 @@ afterEvaluate {
     def junitPlatformTestTask = (JavaExec) project.tasks.getByName('junitPlatformTest')
 
     jacoco {
-        toolVersion '0.7.9'
+        toolVersion '0.8.0'
         applyTo(junitPlatformTestTask)
     }
 

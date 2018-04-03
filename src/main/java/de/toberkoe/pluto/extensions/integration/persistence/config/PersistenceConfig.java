@@ -7,7 +7,10 @@ import de.toberkoe.pluto.extensions.integration.persistence.config.discovery.*;
 import de.toberkoe.pluto.extensions.integration.persistence.config.log.Log;
 import de.toberkoe.pluto.extensions.integration.persistence.config.log.LogConfig;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,7 +23,7 @@ public class PersistenceConfig {
 
     private PersistenceConfig(Class<?> testClass) {
         this.testClass = testClass;
-        defaultUnitName = UUID.randomUUID().toString();
+        defaultUnitName = testClass.getName();
     }
 
     public static PersistenceConfig build(Class<?> testClass) {
