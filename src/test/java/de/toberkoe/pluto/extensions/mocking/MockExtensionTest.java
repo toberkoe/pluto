@@ -2,18 +2,16 @@ package de.toberkoe.pluto.extensions.mocking;
 
 import de.toberkoe.pluto.examples.mock.Person;
 import de.toberkoe.pluto.examples.mock.PersonRepository;
+import javax.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import javax.persistence.EntityManager;
 
 import static de.toberkoe.fluentassertions.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
-@ExtendWith(MockExtension.class)
+@MockTest
 class MockExtensionTest {
 
     @Mock
